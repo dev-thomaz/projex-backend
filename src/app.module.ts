@@ -5,7 +5,8 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
-import { ProjectModule } from './project/project.module'; // Import the ProjectModule
+import { ProjectModule } from './project/project.module';
+import { TaskModule } from './task/task.module'; // Importe o TaskModule
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { ProjectModule } from './project/project.module'; // Import the ProjectM
       }),
       inject: [ConfigService],
     }),
-    ProjectModule, // Add the ProjectModule to the imports
+    ProjectModule,
+    TaskModule, // Adicione o TaskModule aos imports
   ],
   controllers: [AppController],
   providers: [AppService],

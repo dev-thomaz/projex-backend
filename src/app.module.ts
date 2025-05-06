@@ -6,7 +6,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { ProjectModule } from './project/project.module';
-import { TaskModule } from './task/task.module'; // Importe o TaskModule
+import { TaskModule } from './task/task.module';
+import { StageModule } from './stage/stage.module'; // Importe o StageModule
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { TaskModule } from './task/task.module'; // Importe o TaskModule
       inject: [ConfigService],
     }),
     ProjectModule,
-    TaskModule, // Adicione o TaskModule aos imports
+    TaskModule,
+    StageModule, // Adicione o StageModule aos imports
   ],
   controllers: [AppController],
   providers: [AppService],

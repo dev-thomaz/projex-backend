@@ -20,7 +20,7 @@ export class StageService {
   async findAllByProject(projectId: number): Promise<Stage[]> {
     return this.stageRepository.find({
       where: { project: { id: projectId } },
-      order: { order: 'ASC' }, // Ordenar as etapas pela ordem
+      order: { order: 'ASC' }, 
       relations: ['tasks'],
     });
   }

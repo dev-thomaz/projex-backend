@@ -9,6 +9,6 @@ import { Stage } from './stage.entity';
   imports: [TypeOrmModule.forFeature([Stage])],
   controllers: [StageController],
   providers: [StageService],
-  exports: [StageService], // Exportamos o serviço para que outros módulos possam usá-lo
+  exports: [StageService], 
 })
 export class StageModule {}

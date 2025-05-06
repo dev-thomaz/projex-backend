@@ -1,12 +1,15 @@
 // src/project/project.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UsePipes, ValidationPipe, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { Project } from './project.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
-
+import { UpdateTaskOrderDto } from './dto/update-task-order.dto';
+import { TaskService } from '../task/task.service';
 @Controller('projects')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService, 
+    private tasksService: TaskService) {}
 
   @Post()
   @UsePipes(ValidationPipe)

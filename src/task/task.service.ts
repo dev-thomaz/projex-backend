@@ -1,15 +1,18 @@
 // src/task/task.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { StageService } from '../stage/stage.service'; 
+import { TaskOrderDto } from './dto/update-task-order.dto';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
+    private readonly stageService: StageService, 
   ) {}
 
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
@@ -21,6 +24,7 @@ export class TaskService {
     return this.taskRepository.find({
       where: { project: { id: projectId } },
       relations: ['stage'],
+      order: { order: 'ASC' }, 
     });
   }
 
@@ -49,5 +53,43 @@ export class TaskService {
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
+  }
+
+  async moveTask(taskId: number, newStageId: number): Promise<Task> {
+    const task = await this.findOne(taskId); 
+    const stage = await this.stageService.findOne(newStageId); 
+
+    task.stage = stage;
+    return this.taskRepository.save(task);
+  }
+
+  async updateTaskOrderForProject(projectId: number, tasks: { id: number; order: number }[]): Promise<void> {
+    const tasksInProject = await this.findAllByProject(projectId);
+    const taskIdsInProject = tasksInProject.map(task => task.id);
+
+    if (tasks.every(task => taskIdsInProject.includes(task.id))) {
+        throw new NotFoundException(`One or more task IDs do not belong to project with ID "${projectId}"`);
+    }
+
+    await Promise.all(
+        tasks.map(async (taskData) => {
+            const task = await this.taskRepository.findOneBy({ id: taskData.id });
+            if (!task) {
+                throw new NotFoundException(`Task with id ${taskData.id} not found`); 
+            }
+            task.order = taskData.order;
+            await this.taskRepository.save(task);
+        }),
+    );
+}
+
+  async findManyByIdsAndProject(taskIds: number[], projectId: number): Promise<Task[]> {
+    return this.taskRepository.find({
+      where: {
+        id: In(taskIds),
+        project: { id: projectId },
+      },
+      relations: ['stage'],
+    });
   }
 }

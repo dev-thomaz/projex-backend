@@ -1,4 +1,3 @@
-// src/project/project.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Task } from '../task/task.entity';
 import { Stage } from '../stage/stage.entity';
@@ -10,6 +9,9 @@ export class Project {
 
   @Column()
   name: string;
+
+  @Column({ nullable: true, default: '' })
+  description: string;
 
   @OneToMany(() => Task, (task) => task.project)
   tasks: Task[];

@@ -1,9 +1,9 @@
-// src/project/project.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './project.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
+import { UpdateProjectDto } from './dto/update-project.dto'; 
 
 @Injectable()
 export class ProjectService {
@@ -28,9 +28,17 @@ export class ProjectService {
     });
   }
 
-  async update(id: number, updateProjectDto: CreateProjectDto): Promise<Project | null> {
-    await this.projectRepository.update(id, updateProjectDto);
-    return this.projectRepository.findOne({ where: { id } });
+  async update(id: number, updateProjectDto: UpdateProjectDto): Promise<Project | null> { 
+    const project = await this.projectRepository.findOneBy({ id });
+    if (!project) {
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+ 
+    project.name = updateProjectDto.name ?? '';
+    project.description = updateProjectDto.description ?? ''; 
+
+    await this.projectRepository.save(project);
+    return this.projectRepository.findOneBy({ id });
   }
 
   async remove(id: number): Promise<void> {

@@ -27,4 +27,7 @@ export class Task {
 
   @Column()
   stageId: number;
+
+  @Column({ default: 0 }) 
+  order: number;
 }

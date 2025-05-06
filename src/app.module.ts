@@ -41,7 +41,7 @@ import { StageModule } from './stage/stage.module'; // Importe o StageModule
     }),
     ProjectModule,
     TaskModule,
-    StageModule, // Adicione o StageModule aos imports
+    StageModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

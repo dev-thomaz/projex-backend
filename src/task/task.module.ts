@@ -4,11 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
 import { Task } from './task.entity';
+import { StageModule } from '../stage/stage.module'; 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task])],
+  imports: [TypeOrmModule.forFeature([Task]), StageModule], 
   controllers: [TaskController],
   providers: [TaskService],
-  exports: [TaskService], // Exportamos o serviço para que outros módulos possam usá-lo
+  exports: [TaskService],
 })
 export class TaskModule {}
